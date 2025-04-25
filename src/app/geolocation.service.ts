@@ -16,9 +16,6 @@ export class Coords {
     providedIn: 'root'
 })
 export class GeolocationService {
-    private readonly GEO_TIMEOUT = 30 * 1000;
-    private readonly POS_OPTS: PositionOptions;
-
     private coordsSubject = new BehaviorSubject<Coords>(new Coords());  // new subscriptions always gets the last known coords right away
     public coords$ = this.coordsSubject.asObservable();
     public logs: Array<string> = [];
@@ -28,10 +25,6 @@ export class GeolocationService {
     constructor(
         private platform: Platform
     ) {
-        this.POS_OPTS = {
-            // Note: mit enableHighAccuracy = false, funktioniert es unter Android überhaupt nicht.
-            enableHighAccuracy: true
-        };
         this.init();
     }
 
@@ -40,7 +33,7 @@ export class GeolocationService {
             of(1).pipe(
                 tap(_ => console.log('GeolocationService', 'init', 'calling geolocation.watchPosition()')),
                 concatMap(_ => from(Geolocation.watchPosition(
-                    this.POS_OPTS,
+                    { enableHighAccuracy: true },
                     (position: Position | null, err: any) => {
                         this.handleGeocallback(position, err);
                     }))
@@ -49,21 +42,6 @@ export class GeolocationService {
                 this.callbackId = id;
                 console.log('GeolocationService', 'init', `done geolocation.watchPosition(): id=${id}`);
             });
-        });
-    }
-
-    public updateGeoPosition(): void {
-        console.log('GeolocationService', 'updateGeoPosition', 'calling geolocation.getCurrentPosition()');
-
-        from(Geolocation.getCurrentPosition(this.POS_OPTS)).subscribe({
-            next: (position: Position) => {
-                console.log('GeolocationService', 'updateGeoPosition', 'next called.');
-                this.handleGeocallback(position, null);
-            },
-            error: (error) => {
-                console.log('GeolocationService', 'updateGeoPosition', 'error called.');
-                this.handleGeocallback(null, error);
-            }
         });
     }
 
