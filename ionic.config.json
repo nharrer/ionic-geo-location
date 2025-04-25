@@ -1,5 +1,7 @@
 {
   "name": "ionic-geo-location",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular-standalone"
 }

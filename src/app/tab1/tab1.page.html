@@ -13,5 +13,15 @@
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  <div *ngIf="coords">
+    <div>Lat: {{coords.lat}}</div>
+    <div>Long: {{coords.long}}</div>
+    <div>Accuracy: {{coords.accuracy}}</div>
+    <div>Timestamp: {{coords.timestamp}} ({{elapsed}} seconds ago)</div>
+  </div>
+
+  <h2>Logs (newest first):</h2>
+  <div class="logs" *ngFor="let line of geolocationService.logs.slice().reverse()">
+    {{line}}
+  </div>
 </ion-content>
